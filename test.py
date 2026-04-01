@@ -171,6 +171,27 @@ def pgd_targeted(model, x, target, k, eps, eps_step):
 
     return x_adv.detach()
 
+def pgd_untargeted(model, x, label, k, eps, eps_step):
+    x_adv = x.clone().detach()
+    
+    for _ in range(k):
+        x_adv = x_adv.clone().detach()
+        x_adv.requires_grad = True
+        x_adv.retain_grad()
+        
+        output = model(x_adv)
+        loss = nn.CrossEntropyLoss()(output, label)
+        
+        model.zero_grad()
+        loss.backward()
+        
+        with torch.no_grad():
+            x_adv = x_adv + eps_step * x_adv.grad.sign()
+            eta = torch.clamp(x_adv - x, min=-eps, max=eps)
+            x_adv = torch.clamp(x + eta, min=0, max=1)
+            
+    return x_adv.detach()
+
 # regularization
 class AttackWrapper(nn.Module): # attack 함수가 모델 내부에서만 0~1범위로 정규화하게
     def __init__(self, model, dataset_name):
@@ -319,7 +340,8 @@ if __name__ == '__main__':
     attacks = [
         ("Targeted_FGSM", fgsm_targeted, True),
         ("Untargeted_FGSM", fgsm_untargeted, False),
-        ("Targeted_PGD", pgd_targeted, True)
+        ("Targeted_PGD", pgd_targeted, True),
+        ("Untargeted_PGD", pgd_untargeted, False)
     ]
     
     datasets = [
