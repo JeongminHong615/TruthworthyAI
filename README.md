@@ -15,10 +15,10 @@ neural networks의 adversial attacks의 기법(FGSM, PGD) 구현하고 평가한
 
 ## Structure
 
-.
-├── test.py # 메인 스크립트
-├── requirements.txt # 필요한 파이썬 패키지 목록
-├── README.md
-├── report.pdf # 실험 결과 분석 보고서
-├── mnist_cnn.pth # MNIST CNN 모델 가중치
+.  
+├── test.py # 메인 스크립트  
+├── requirements.txt # 필요한 파이썬 패키지 목록  
+├── README.md  
+├── report.pdf # 실험 결과 분석 보고서  
+├── mnist_cnn.pth # MNIST CNN 모델 가중치  
 └── results/ # 시각화 이미지 저장
